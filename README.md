@@ -86,3 +86,33 @@
 |dense (Dense)|(None, 26)|10010|dropout_9[0][0]|
 |batch_normalization_9 (BatchNor|(None, 26)|104|dense[0][0]|
 |activation (Activation)|(None, 26)|0|batch_normalization_9[0][0]|
+
+### 3. CNN + LSTM with A Combined Input
+
+* 3d_hw_cnn+lstm_one_input.py: 가속도들을 하나의 인풋으로 통합한 뒤 CNN+LSTM 모델링
+* Input: (n, 154, 3)
+* Test score: 0.8283678647954907
+* Test accuracy: 0.8687315519932097 -> 약 86%의 정확도
+
+|Layer (type)|Output Shape|Param #|
+|--|--|--|
+|input_1 (InputLayer)|(None, 154, 3)|0|
+|conv1d (Conv1D)|(None, 154, 512)|5120|
+|batch_normalization (BatchNorma|(None, 154, 512)|2048|
+|max_pooling1d (MaxPooling1D)|(None, 77, 512)|0|
+|dropout (Dropout)|(None, 77, 512)|0|
+|conv1d_1 (Conv1D)|(None, 77, 64)|98368|
+|batch_normalization_1 (BatchNor|(None, 77, 64)|256|
+|max_pooling1d_1 (MaxPooling1D)|(None, 38, 64)|0|
+|dropout_1 (Dropout)|(None, 38, 64)|0|
+|conv1d_2 (Conv1D)|(None, 38, 64)|12352|
+|batch_normalization_2 (BatchNor|(None, 38, 64)|256|
+|max_pooling1d_2 (MaxPooling1D)|(None, 19, 64)|0|
+|lstm (LSTM)|(None, 19, 128)|98816|
+|lstm_1 (LSTM)|(None, 19, 128)|131584|
+|lstm_2 (LSTM)|(None, 128)|131584|
+|dropout_2 (Dropout)|(None, 128)|0|
+|dense (Dense)|(None, 26)|3354|
+|batch_normalization_9 (BatchNor|(None, 26)|104|
+|activation (Activation)|(None, 26)|0|
+
