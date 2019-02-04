@@ -10,7 +10,7 @@ from tensorflow.keras.layers import Conv1D, LSTM, MaxPooling1D, Dropout, Activat
 from sklearn import model_selection
 
 def get_dataframe_from_excel(fpath, sheetname=0):
-    df = pd.read_excel(fpath, sheetname)
+    df = pd.read_excel(fpath, sheetname, header=None)
     return df
 
 def make_train_test_split(train, answer):
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Make Dataset
     hand_writing = {
-        'dataset': './data/3D_handwriting_train_new.xlsx',
+        'dataset': './3D_handwriting_train.xlsx',
         'train': 'train_data',
         'answer': 'answer'
     }
@@ -44,14 +44,18 @@ if __name__ == "__main__":
 
     train = np.dstack([train_X, train_Y, train_Z])
 
-    train_x, test_x, train_y, test_y = make_train_test_split(train, hand_writing_answer)
-
+    # train_x, test_x, train_y, test_y = make_train_test_split(train, hand_writing_answer)
+    train_x, test_x, train_y, test_y = make_train_test_split(train[:1900], hand_writing_answer[:1900])
     train_x = np.dsplit(train_x, 3)
     test_x = np.dsplit(test_x, 3)
 
     # Build Model
-    batch_size = 30
-    epochs = 100
+    # batch_size = 30
+    batch_size = 5
+    # batch_size = 30
+    batch_size = 5
+    # epochs = 100
+    epochs = 10
     kernel_size = 3
     pool_size = 2
     dropout_rate = 0.15
@@ -131,9 +135,10 @@ if __name__ == "__main__":
                     batch_size=batch_size, epochs=epochs,
                     validation_data=([test_x[0], test_x[1], test_x[2]], test_y))
 
-    score, acc = main_model.evaluate([test_x[0], test_x[1], test_x[2]], test_y,
-                                batch_size=30)
+    # score, acc = main_model.evaluate([test_x[0], test_x[1], test_x[2]], test_y,
+    #                             batch_size=30)
 
+    score, acc = main_model.evaluate([train[0][1900:], train[1][1900:], train[2][1900:]], hand_writing_answer[1900:], batch_size=5)
     # Test Model
     print('Test score:', score)
     print('Test accuracy:', acc)
